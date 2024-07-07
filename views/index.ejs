@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quản lý File</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<link rel="stylesheet" href="/views/style.css">
+<body>
+  <h1>Danh sách File</h1>
+  <ul>
+    <% files.forEach(file => { %>
+      <li>
+<a href="/download/<%= file %>" class="file-icon" ">
+    <%= file %>
+  </a>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>
