@@ -10,7 +10,7 @@
 <body>
   <h1>Danh sách File</h1>
   <ul>
-    <% if (currentDir != '.') { %>
+    <% if (currentDir && currentDir != '.') { %>
       <li>
         <a href="/?dir=<%= parentDir %>" class="folder-icon">
           <i class="fas fa-folder"></i> .. (Back)
@@ -25,7 +25,7 @@
                 <%= item.name %>
               </a>
               <% } else { %>
-                <a href="/download/<%= item.name %>" class="file-icon" data-type="<%= item.extension %>">
+                <a href="/download/<%=`${ item.name}` %>?dir=<%= currentDir %>" class="file-icon" data-type="<%= item.extension %>">
                   <%= item.name %>
                 </a>
                 <% } %>

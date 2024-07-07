@@ -10,7 +10,6 @@ const port = 2345;
 function getFileExtension(filename) {
   return path.extname(filename).toLowerCase();
 }
-
 // Thiết lập EJS làm template engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -29,14 +28,30 @@ app.get('/style.css', (req, res) => {
 //   next();
 // });
 // Route để xử lý download file
+//Download thư mục gốc
 app.get('/download/:filename', (req, res) => {
   const filename = req.params.filename;
-  const filePath = path.join(__dirname, 'drive', filename);
-
+  const filePath = path.join(__dirname, 'drive' , filename);
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       console.error('File không tồn tại:', err);
-      return res.status(404).send('File không tìm thấy');
+      return res.status(404).send('File không tìm thấyabc');
+    }
+    res.download(filePath);
+  });
+});
+
+//Download thư mục con
+app.get('/download/:filename?dir=:dir', (req, res) => {
+  const filename = req.params.filename;
+  const dirF = '/'+req.params.dir;
+  if (req.params.dir!=''){
+  	const filePath = path.join(__dirname, 'drive'+dirF , filename);
+  }
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error('File không tồn tại:', err);
+      return res.status(404).send('File không tìm thấy'+dirF);
     }
     res.download(filePath);
   });
@@ -63,6 +78,8 @@ app.get('/', (req, res) => {
         isDirectory: stat.isDirectory(),
         path: path.join(currentDir, item) // Thêm thuộc tính path
       };
+      //Save lastDir
+      localStorage.setItem('lastDir',currentDir);
     });
 
     // Sửa lỗi thiếu dấu ngoặc đóng cho `res.render`
