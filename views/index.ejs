@@ -2,17 +2,30 @@
 <html>
 <head>
   <title>Quản lý File</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="/views/style.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
-<link rel="stylesheet" href="/views/style.css">
 <body>
   <h1>Danh sách File</h1>
   <ul>
-    <% files.forEach(file => { %>
+   <% if (currentDir) { %>
+  <li>
+    <a href="/?dir=<%= parentDir %>" class="folder-icon">
+      <i class="fas fa-folder"></i> .. (Back)
+    </a>
+  </li>
+<% } %>
+    <% items.forEach(item => { %>
       <li>
-<a href="/download/<%= file %>" class="file-icon" ">
-    <%= file %>
+        	<% if (item.isDirectory) { %>
+  <a href="/?dir=<%= item.path %>" class="folder-icon"> 
+    <i class="fas fa-folder"></i> <%= item.name %>
   </a>
+<% } else { %>	
+          <a href="/download/<%= item.name %>" class="file-icon" data-type="<%= item.extension %>">
+            <i class="far fa-file"></i> <%= item.name %>
+          </a>
+        <% } %>
       </li>
     <% }); %>
   </ul>

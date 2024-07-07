@@ -5,13 +5,16 @@ const path = require('path');
 const app = express();
 const port = 2345;
 
-const directoryPath = './drive'; // Đường dẫn thư mục chứa file
+// Function để lấy phần mở rộng của file
+function getFileExtension(filename) {
+  return path.extname(filename).toLowerCase();
+}
 
 // Thiết lập EJS làm template engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// *** Đặt express.static() trước các route khác ***
+// Đặt express.static() trước các route khác 
 app.use(express.static('public')); 
 
 // Route để phục vụ file CSS từ thư mục 'views'
@@ -33,27 +36,34 @@ app.get('/download/:filename', (req, res) => {
   });
 });
 
-// Route hiển thị danh sách file
+// Route hiển thị danh sách file và folder
 app.get('/', (req, res) => {
-  fs.readdir(directoryPath, (err, files) => {
+  const currentDir = req.query.dir || '';
+  const directoryPath = path.join(__dirname, 'drive', currentDir);	
+
+  fs.readdir(directoryPath, (err, items) => {
     if (err) {
       console.error('Lỗi đọc thư mục:', err);
       return res.status(500).render('error', { error: 'Lỗi server' });
     }
 
-    const fileList = files.filter(file => {
-      return fs.statSync(path.join(directoryPath, file)).isFile();
-    });
-const filesWithExtensions = fileList.map(file => ({
-      name: file,
-      extension: getFileExtension(file)
-    }));
-    res.render('index', { files: fileList });
-  });
+    const itemsWithDetails = items.map(item => {
+  const itemPath = path.join(directoryPath, item);
+  const stat = fs.statSync(itemPath);
+  return {
+    name: item,
+    extension: getFileExtension(item),
+    isDirectory: stat.isDirectory(),
+    path: path.join(currentDir, item) // Thêm thuộc tính path
+  };
 });
-function getFileExtension(filename) {
-  return filename.split('.').pop().toLowerCase();
-}
+
+res.render('index', { 
+    items: itemsWithDetails, 
+    currentDir, 
+    parentDir: path.dirname(currentDir) // Thêm parentDir vào đây
+  });
+
 app.listen(port, () => {
   console.log(`Server đang chạy tại http://localhost:${port}`);
 });
