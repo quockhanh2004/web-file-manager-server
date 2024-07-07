@@ -35,18 +35,18 @@ app.get('/download/:filename', (req, res) => {
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       console.error('File không tồn tại:', err);
-      return res.status(404).send('File không tìm thấyabc');
+      return res.status(404).send('File không tìm thấy');
     }
     res.download(filePath);
   });
 });
 
-//Download thư mục con
-app.get('/download/:filename?dir=:dir', (req, res) => {
+//Download thư mục con (Err: k cho truyền data dirt lên params)
+app.get('/download/:filename?dir=:dirt', (req, res) => {
   const filename = req.params.filename;
-  const dirF = '/'+req.params.dir;
+  const dirF = '/'+req.params.dirt;
   if (req.params.dir!=''){
-  	const filePath = path.join(__dirname, 'drive'+dirF , filename);
+  	const filePath = path.join(__dirname, String('drive'+dirF) , filename);
   }
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
