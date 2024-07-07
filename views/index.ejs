@@ -10,7 +10,7 @@
 <body>
   <h1>Danh sách File</h1>
   <ul>
-    <% if (currentDir) { %>
+    <% if (currentDir != '.') { %>
       <li>
         <a href="/?dir=<%= parentDir %>" class="folder-icon">
           <i class="fas fa-folder"></i> .. (Back)

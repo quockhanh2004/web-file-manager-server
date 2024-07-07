@@ -1,3 +1,4 @@
+const { log } = require('console');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -45,6 +46,7 @@ app.get('/download/:filename', (req, res) => {
 app.get('/', (req, res) => {
   const currentDir = req.query.dir || '';
   const directoryPath = path.join(__dirname, 'drive', currentDir);
+  console.log(currentDir);
 
   fs.readdir(directoryPath, (err, items) => {
     if (err) {
