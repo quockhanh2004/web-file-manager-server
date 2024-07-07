@@ -21,18 +21,13 @@ app.use(express.static('public'));
 app.get('/style.css', (req, res) => {
   res.sendFile(__dirname + '/views/style.css'); 
 });
-// app.use((req, res, next) => {
-//   const ext = path.extname(req.url);
-//   if (ext === '.css') {
-//     res.set('Content-Type', 'text/css');
-//   }
-//   next();
-// });
-// Route để xử lý download file
-app.get('/download/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const filePath = path.join(__dirname, 'drive', filename);
 
+app.get('/download/*', (req, res) => {
+  const decodedPath = decodeURIComponent(req.path);
+
+  // Loại bỏ "/download/" khỏi decodedPath
+  const filePath = path.join(__dirname, 'drive', decodedPath.replace('/download', ''));
+console.log(filePath);
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       console.error('File không tồn tại:', err);
@@ -41,6 +36,13 @@ app.get('/download/:filename', (req, res) => {
     res.download(filePath);
   });
 });
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
+  return `${(bytes / (1024 ** i)).toFixed(2)} ${sizes[i]}`;
+}
 
 // Route hiển thị danh sách file và folder
 app.get('/', (req, res) => {
@@ -56,12 +58,14 @@ app.get('/', (req, res) => {
 
     const itemsWithDetails = items.map(item => {
       const itemPath = path.join(directoryPath, item);
+
       const stat = fs.statSync(itemPath);
       return {
         name: item,
         extension: getFileExtension(item),
         isDirectory: stat.isDirectory(),
-        path: path.join(currentDir, item) // Thêm thuộc tính path
+        path: path.join(currentDir, item), // Thêm thuộc tính path
+size: stat.isFile() ? formatFileSize(stat.size) : ''
       };
     });
 
