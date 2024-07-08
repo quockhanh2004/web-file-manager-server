@@ -2,20 +2,30 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const { getFileExtension, formatFileSize } = require("../utils/fileUtils");
-const { log } = require("console");
 
 const router = express.Router();
 
 // Route xử lý download file
-router.get('/download/*', (req, res) => {
+router.get("/download/*", (req, res) => {
   const decodedPath = decodeURIComponent(req.path);
-  const filePath = path.join(__dirname, '..', '..', 'drive', decodedPath.replace('/download', ''));
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "drive",
+    decodedPath.replace("/download", "")
+  );
+  let file = filePath.toString().split("/");
+  //kiểm tra tên file có bắt đầu bằng dấu .
+  if (file[file.length - 1].startsWith(".")) {
+    return res.status(400).send("Không được phép tải file này (file bắt đầu bằng dấu chấm)");
+  }
+
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
-      console.error('File không tồn tại:', err);
-      return res.status(404).send('File không tìm thấy');
+      console.error("File không tồn tại:", err);
+      return res.status(404).send("File không tìm thấy");
     }
-
     // File tồn tại, cho phép tải xuống
     res.download(filePath);
   });
