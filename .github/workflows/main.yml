@@ -7,24 +7,21 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: /home/khanh/web-file-manager-server  # Thư mục ứng dụng của bạn
 
     strategy:
       matrix:
         node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Fetch toàn bộ lịch sử commit
-          repository: quockhanh2004/web-file-manager-server # Tên repository của bạn
+      - name: Pull latest code
+        run: |
+          cd /home/khanh/web-file-manager-server  # Thay đổi đường dẫn đến thư mục ứng dụng
+          git pull origin main
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm ci
-      - name: Restart PM2 on push
+      - name: Restart PM2
         run: pm2 restart 2
