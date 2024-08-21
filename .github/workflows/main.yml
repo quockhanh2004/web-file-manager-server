@@ -1,17 +1,15 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Node.js CI
 
 on:
   push:
     branches: [main]
-  # pull_request:
-  #   branches: [ main ]
 
 jobs:
   build:
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /home/khanh/web-file-manager-server  # Thư mục ứng dụng của bạn
 
     strategy:
       matrix:
@@ -19,9 +17,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch toàn bộ lịch sử commit
+          repository: quockhanh2004/web-file-manager-server # Tên repository của bạn
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i
-      - run: npm start
+      - name: Install dependencies
+        run: npm ci
+      - name: Restart PM2 on push
+        run: pm2 restart 2
