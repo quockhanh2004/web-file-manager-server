@@ -17,11 +17,9 @@ jobs:
         run: |
           cd /home/khanh/web-file-manager-server  # Thay đổi đường dẫn đến thư mục ứng dụng
           git pull origin main
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd /home/khanh/web-file-manager-server
+          npm ci
       - name: Restart PM2
         run: pm2 restart 2
