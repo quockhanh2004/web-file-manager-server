@@ -48,7 +48,7 @@ a {
 .file-icon::before {
   font-family: 'Font Awesome 5 Free';
   content: '\f15b';
-  margin-right: 15px; /* 10px * 1.5 */ 
+  /* margin-right: 15px; 10px * 1.5  */
   font-size: 30px; /* 20px * 1.5 */ 
 }
 
@@ -57,7 +57,27 @@ li.file-item {
   justify-content: space-between; 
   align-items: center; 
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left; 
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+.folder-icon i {
+  margin-right: 5px;
+}
+td {
+  text-align: left; /* Căn lề trái cho tất cả các ô trong bảng */
+}
 /* Ví dụ icon cho các loại file cụ thể */
 .file-icon[data-type="image"]::before { content: '\f1c5'; } 
 .file-icon[data-type="pdf"]::before { content: '\f1c1'; } 
