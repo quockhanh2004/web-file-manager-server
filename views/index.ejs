@@ -10,9 +10,9 @@
   <table style="width: 100%;">
     <thead>
       <tr>
-        <th>Tên</th>
-        <th>Loại</th>
-        <th>Kích thước</th>
+        <th><a href="/?dir=<%= currentDir %>&sort=name">Tên</a></th>
+        <th><a href="/?dir=<%= currentDir %>&sort=type">Loại</a></th>
+        <th><a href="/?dir=<%= currentDir %>&sort=size">Kích thước</a></th>
       </tr>
     </thead>
     <tbody>
@@ -23,8 +23,8 @@
             <i class="fas fa-folder"></i> .. (Back)
           </a>
         </td>
-        <td></td> 
-        <td></td> 
+        <td></td>
+        <td></td>
       </tr>
       <% } %>
 
@@ -32,17 +32,17 @@
       <tr>
         <td>
           <% if (item.isDirectory) { %>
-          <a href="/?dir=<%= encodeURIComponent(item.path) %>" class="folder-icon">
-            <i class="fas fa-folder"></i> <%= item.name.trim() %> 
+          <a href="/?dir=<%= encodeURIComponent(item.path) %>&sort=<%= sortBy %>" class="folder-icon">
+            <i class="fas fa-folder"></i> <%= item.name.trim() %>
           </a>
           <% } else { %>
           <a href="/download/<%= encodeURIComponent(item.path) %>" class="file-icon" data-type="<%= item.extension %>">
-            <%= item.name.trim() %> 
+            <%= item.name.trim() %>
           </a>
           <% } %>
         </td>
         <td><%= item.isDirectory ? "Folder" : "File" %></td>
-        <td><%= item.size %></td> 
+        <td><%= item.size %></td>
       </tr>
       <% }); %>
     </tbody>
