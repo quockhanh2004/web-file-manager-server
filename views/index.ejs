@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Quản lý File</title>
+  <title>File của Khánh</title>
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
+
 <body>
   <h1>Danh sách File</h1>
   <table style="width: 100%;">
@@ -16,36 +18,43 @@
       </tr>
     </thead>
     <tbody>
-      <% if (currentDir && currentDir !== '.') { %>
-      <tr>
-        <td>
-          <a href="/?dir=<%= parentDir %>" class="folder-icon">
-            <i class="fas fa-folder"></i> .. (Back)
-          </a>
-        </td>
-        <td></td>
-        <td></td>
-      </tr>
-      <% } %>
+      <% if (currentDir && currentDir !=='.' ) { %>
+        <tr>
+          <td>
+            <a href="/?dir=<%= parentDir %>" class="folder-icon">
+              <i class="fas fa-folder"></i> .. (Back)
+            </a>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <% } %>
 
-      <% items.forEach(item => { %>
-      <tr>
-        <td>
-          <% if (item.isDirectory) { %>
-          <a href="/?dir=<%= encodeURIComponent(item.path) %>&sort=<%= sortBy %>" class="folder-icon">
-            <i class="fas fa-folder"></i> <%= item.name.trim() %>
-          </a>
-          <% } else { %>
-          <a href="/download/<%= encodeURIComponent(item.path) %>" class="file-icon" data-type="<%= item.extension %>">
-            <%= item.name.trim() %>
-          </a>
-          <% } %>
-        </td>
-        <td><%= item.isDirectory ? "Folder" : "File" %></td>
-        <td><%= item.size %></td>
-      </tr>
-      <% }); %>
+          <% items.forEach(item=> { %>
+            <tr>
+              <td>
+                <% if (item.isDirectory) { %>
+                  <a href="/?dir=<%= encodeURIComponent(item.path) %>&sort=<%= sortBy %>" class="folder-icon">
+                    <i class="fas fa-folder"></i>
+                    <%= item.name.trim() %>
+                  </a>
+                  <% } else { %>
+                    <a href="/download/<%= encodeURIComponent(item.path) %>" class="file-icon"
+                      data-type="<%= item.extension %>">
+                      <%= item.name.trim() %>
+                    </a>
+                    <% } %>
+              </td>
+              <td>
+                <%= item.isDirectory ? "Folder" : "File" %>
+              </td>
+              <td>
+                <%= item.size %>
+              </td>
+            </tr>
+            <% }); %>
     </tbody>
   </table>
 </body>
+
 </html>

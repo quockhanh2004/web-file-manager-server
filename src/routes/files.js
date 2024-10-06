@@ -15,9 +15,11 @@ router.get("/download/*", (req, res) => {
     "drive",
     decodedPath.replace("/download", "")
   );
-  let file = filePath.toString().split("/");
-  //kiểm tra tên file có bắt đầu bằng dấu .
-  if (file[file.length - 1].startsWith(".")) {
+
+  const fileName = path.basename(filePath);
+
+  // Kiểm tra tên file có bắt đầu bằng dấu .
+  if (fileName.startsWith(".")) {
     return res
       .status(400)
       .send("Không được phép tải file này (file bắt đầu bằng dấu chấm)");
@@ -28,8 +30,38 @@ router.get("/download/*", (req, res) => {
       console.error("File không tồn tại:", err);
       return res.status(404).send("File không tìm thấy");
     }
+
+    const fileExtension = path.extname(filePath).toLowerCase();
+    const supportedExtensions = [
+      ".pdf",
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".txt",
+      ".json",
+      ".html",
+    ];
+
+    // Kiểm tra xem trình duyệt có hỗ trợ xem trước file hay không
+    if (supportedExtensions.includes(fileExtension)) {
+      console.log("xem trực tiếp");
+      res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+    } else {
+      console.log("File không hỗ trợ xem trước");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${fileName}"`
+      );
+    }
+
     // File tồn tại, cho phép tải xuống
-    res.download(filePath);
+    res.download(filePath, (err) => {
+      if (err) {
+        console.error("Lỗi khi tải xuống:", err);
+        res.status(500).send("Lỗi khi tải xuống file");
+      }
+    });
   });
 });
 
