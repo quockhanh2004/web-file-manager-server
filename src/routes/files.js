@@ -38,6 +38,10 @@ router.get("/download/*", (req, res) => {
 
     // File tồn tại, cho phép tải xuống
     res.sendFile(filePath, (err) => {
+      if (err.code === 'ECONNABORTED') {
+        console.log('Download bị hủy bởi người dùng.');
+        return;
+      }
       if (err) {
         console.error("Lỗi khi tải xuống:", err);
         res.status(500).send("Lỗi khi tải xuống file");
