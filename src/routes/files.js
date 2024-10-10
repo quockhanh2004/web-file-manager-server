@@ -35,20 +35,9 @@ router.get("/download/*", (req, res) => {
       console.error("File không tồn tại:", err);
       return res.status(404).send("File không tìm thấy");
     }
-    // Kiểm tra xem trình duyệt có hỗ trợ xem trước file hay không
-    // if (supportedExtensions.includes(fileExtension)) {
-    //   console.log("xem trực tiếp");
-    //   res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
-    // } else {
-    //   console.log("File không hỗ trợ xem trước");
-    //   res.setHeader(
-    //     "Content-Disposition",
-    //     `attachment; filename="${fileName}"`
-    //   );
-    // }
 
     // File tồn tại, cho phép tải xuống
-    res.download(filePath, (err) => {
+    res.sendFile(filePath, (err) => {
       if (err) {
         console.error("Lỗi khi tải xuống:", err);
         res.status(500).send("Lỗi khi tải xuống file");
