@@ -39,7 +39,7 @@
                     <%= item.name.trim() %>
                   </a>
                   <% } else { %>
-                    <a href="/download/<%= encodeURIComponent(item.path) %>" class="file-icon"
+                    <a href="<%= item.path %>" class="file-icon"
                       data-type="<%= item.extension %>">
                       <%= item.name.trim() %>
                     </a>

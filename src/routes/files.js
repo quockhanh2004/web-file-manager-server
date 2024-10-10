@@ -2,6 +2,11 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const { getFileExtension, formatFileSize } = require("../utils/fileUtils");
+const e = require("express");
+require("dotenv").config();
+
+const domain = process.env.DOMAIN;
+console.log(domain);
 
 const router = express.Router();
 
@@ -30,30 +35,17 @@ router.get("/download/*", (req, res) => {
       console.error("File không tồn tại:", err);
       return res.status(404).send("File không tìm thấy");
     }
-
-    const fileExtension = path.extname(filePath).toLowerCase();
-    const supportedExtensions = [
-      ".pdf",
-      ".jpg",
-      ".jpeg",
-      ".png",
-      ".gif",
-      ".txt",
-      ".json",
-      ".html",
-    ];
-
     // Kiểm tra xem trình duyệt có hỗ trợ xem trước file hay không
-    if (supportedExtensions.includes(fileExtension)) {
-      console.log("xem trực tiếp");
-      res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
-    } else {
-      console.log("File không hỗ trợ xem trước");
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${fileName}"`
-      );
-    }
+    // if (supportedExtensions.includes(fileExtension)) {
+    //   console.log("xem trực tiếp");
+    //   res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+    // } else {
+    //   console.log("File không hỗ trợ xem trước");
+    //   res.setHeader(
+    //     "Content-Disposition",
+    //     `attachment; filename="${fileName}"`
+    //   );
+    // }
 
     // File tồn tại, cho phép tải xuống
     res.download(filePath, (err) => {
@@ -80,11 +72,34 @@ router.get("/", (req, res) => {
     const itemsWithDetails = items.map((item) => {
       const itemPath = path.join(directoryPath, item);
       const stat = fs.statSync(itemPath);
+
+      const fileExtension = getFileExtension(item).toLowerCase();
+
+      // Tạo đường dẫn file
+      let fileUrl = path.join(directoryPath, item);
+      if (
+        [
+          ".pdf",
+          ".jpg",
+          ".jpeg",
+          ".png",
+          ".gif",
+          ".txt",
+          ".json",
+          ".html",
+        ].includes(fileExtension)
+      ) {
+        fileUrl = `${domain}/${path.join(currentDir, item)}`;
+      } else if (stat.isDirectory()) {
+        fileUrl = path.join(currentDir, item);
+      } else {
+        fileUrl = `download/${path.join(currentDir, item)}`;
+      }
       return {
         name: item,
         extension: getFileExtension(item),
         isDirectory: stat.isDirectory(),
-        path: path.join(currentDir, item),
+        path: fileUrl,
         size: stat.isFile() ? formatFileSize(stat.size) : "",
       };
     });
