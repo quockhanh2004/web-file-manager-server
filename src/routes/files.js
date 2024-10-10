@@ -61,29 +61,35 @@ router.get("/", (req, res) => {
     const itemsWithDetails = items.map((item) => {
       const itemPath = path.join(directoryPath, item);
       const stat = fs.statSync(itemPath);
+      let fileUrl;
+      // const fileExtension = getFileExtension(item).toLowerCase();
 
-      const fileExtension = getFileExtension(item).toLowerCase();
-
-      // Tạo đường dẫn file
-      let fileUrl = path.join(directoryPath, item);
-      if (
-        [
-          ".pdf",
-          ".jpg",
-          ".jpeg",
-          ".png",
-          ".gif",
-          ".txt",
-          ".json",
-          ".html",
-        ].includes(fileExtension)
-      ) {
-        fileUrl = `${domain}/${path.join(currentDir, item)}`;
-      } else if (stat.isDirectory()) {
+      // // Tạo đường dẫn file
+      // let fileUrl = path.join(directoryPath, item);
+      // if (
+      //   [
+      //     ".pdf",
+      //     ".jpg",
+      //     ".jpeg",
+      //     ".png",
+      //     ".gif",
+      //     ".txt",
+      //     ".json",
+      //     ".html",
+      //   ].includes(fileExtension)
+      // ) {
+      //   fileUrl = `${domain}/${path.join(currentDir, item)}`;
+      // } else if (stat.isDirectory()) {
+      //   fileUrl = path.join(currentDir, item);
+      // } else {
+      //   fileUrl = `download/${path.join(currentDir, item)}`;
+      // }
+      if (stat.isDirectory()) {
         fileUrl = path.join(currentDir, item);
       } else {
         fileUrl = `download/${path.join(currentDir, item)}`;
       }
+
       return {
         name: item,
         extension: getFileExtension(item),
