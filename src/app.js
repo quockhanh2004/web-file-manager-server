@@ -15,6 +15,19 @@ morgan.token('vn-time', () => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use((req, res, next) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  //chỉ log ipv4
+  let ipv4;
+  if (ip.includes(':')) {
+    ipv4 = ip.split(':')[3];
+  } else {
+    ipv4 = ip;
+  }
+  console.log(`\nIp Address ${ipv4}`);
+  next();
+});
 app.use(morgan(`:vn-time| :method :url status::status :response-time ms`));
 
 // Sử dụng route cho /files

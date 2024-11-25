@@ -13,48 +13,10 @@ const router = express.Router();
 // Route xử lý download file
 router.get("/download/*", (req, res) => {
   const decodedPath = decodeURIComponent(req.path);
-  const filePath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "drive",
-    decodedPath.replace("/download", "")
-  );
-
-  const fileName = path.basename(filePath);
   const webFilePath = path.join(decodedPath.replace("/download", ""))
 
-  console.log(webFilePath);
   //chuyển hướng đến web khác với webFlePath
   res.redirect(`${domain}${webFilePath}`);
-
-  
-  
-  // Kiểm tra tên file có bắt đầu bằng dấu .
-  // if (fileName.startsWith(".")) {
-  //   return res
-  //     .status(400)
-  //     .send("Không được phép tải file này (file bắt đầu bằng dấu chấm)");
-  // }
-
-  // fs.access(filePath, fs.constants.F_OK, (err) => {
-  //   if (err) {
-  //     console.error("File không tồn tại:", err);
-  //     return res.status(404).send("File không tìm thấy");
-  //   }
-
-  //   // File tồn tại, cho phép tải xuống
-  //   res.sendFile(filePath, (err) => {
-  //     if (err.code === 'ECONNABORTED') {
-  //       console.log('Download bị hủy bởi người dùng.');
-  //       return;
-  //     }
-  //     if (err) {
-  //       console.error("Lỗi khi tải xuống:", err);
-  //       res.status(500).send("Lỗi khi tải xuống file");
-  //     }
-  //   });
-  // });
 });
 
 // Route hiển thị danh sách file và folder
