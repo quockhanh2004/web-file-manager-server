@@ -22,7 +22,7 @@ router.get("/download/*", (req, res) => {
   );
 
   const fileName = path.basename(filePath);
-  const webFilePath = path.join('drive', decodedPath.replace("/download", ""))
+  const webFilePath = path.join(decodedPath.replace("/download", ""))
 
   console.log(webFilePath);
   //chuyển hướng đến web khác với webFlePath
