@@ -22,32 +22,39 @@ router.get("/download/*", (req, res) => {
   );
 
   const fileName = path.basename(filePath);
+  const webFilePath = path.join('drive', decodedPath.replace("/download", ""))
 
+  console.log(webFilePath);
+  //chuyển hướng đến web khác với webFlePath
+  res.redirect(`${domain}/${webFilePath}`);
+
+  
+  
   // Kiểm tra tên file có bắt đầu bằng dấu .
-  if (fileName.startsWith(".")) {
-    return res
-      .status(400)
-      .send("Không được phép tải file này (file bắt đầu bằng dấu chấm)");
-  }
+  // if (fileName.startsWith(".")) {
+  //   return res
+  //     .status(400)
+  //     .send("Không được phép tải file này (file bắt đầu bằng dấu chấm)");
+  // }
 
-  fs.access(filePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      console.error("File không tồn tại:", err);
-      return res.status(404).send("File không tìm thấy");
-    }
+  // fs.access(filePath, fs.constants.F_OK, (err) => {
+  //   if (err) {
+  //     console.error("File không tồn tại:", err);
+  //     return res.status(404).send("File không tìm thấy");
+  //   }
 
-    // File tồn tại, cho phép tải xuống
-    res.sendFile(filePath, (err) => {
-      if (err.code === 'ECONNABORTED') {
-        console.log('Download bị hủy bởi người dùng.');
-        return;
-      }
-      if (err) {
-        console.error("Lỗi khi tải xuống:", err);
-        res.status(500).send("Lỗi khi tải xuống file");
-      }
-    });
-  });
+  //   // File tồn tại, cho phép tải xuống
+  //   res.sendFile(filePath, (err) => {
+  //     if (err.code === 'ECONNABORTED') {
+  //       console.log('Download bị hủy bởi người dùng.');
+  //       return;
+  //     }
+  //     if (err) {
+  //       console.error("Lỗi khi tải xuống:", err);
+  //       res.status(500).send("Lỗi khi tải xuống file");
+  //     }
+  //   });
+  // });
 });
 
 // Route hiển thị danh sách file và folder
@@ -66,28 +73,7 @@ router.get("/", (req, res) => {
       const itemPath = path.join(directoryPath, item);
       const stat = fs.statSync(itemPath);
       let fileUrl;
-      // const fileExtension = getFileExtension(item).toLowerCase();
 
-      // // Tạo đường dẫn file
-      // let fileUrl = path.join(directoryPath, item);
-      // if (
-      //   [
-      //     ".pdf",
-      //     ".jpg",
-      //     ".jpeg",
-      //     ".png",
-      //     ".gif",
-      //     ".txt",
-      //     ".json",
-      //     ".html",
-      //   ].includes(fileExtension)
-      // ) {
-      //   fileUrl = `${domain}/${path.join(currentDir, item)}`;
-      // } else if (stat.isDirectory()) {
-      //   fileUrl = path.join(currentDir, item);
-      // } else {
-      //   fileUrl = `download/${path.join(currentDir, item)}`;
-      // }
       if (stat.isDirectory()) {
         fileUrl = path.join(currentDir, item);
       } else {
