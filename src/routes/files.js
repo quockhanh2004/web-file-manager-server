@@ -26,7 +26,7 @@ router.get("/download/*", (req, res) => {
 
   console.log(webFilePath);
   //chuyển hướng đến web khác với webFlePath
-  res.redirect(`${domain}/${webFilePath}`);
+  res.redirect(`${domain}${webFilePath}`);
 
   
   
