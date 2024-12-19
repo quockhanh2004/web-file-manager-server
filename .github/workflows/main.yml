@@ -6,47 +6,41 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    environment: server_env
     strategy:
       matrix:
         node-version: [20.x]
     steps:
-      - name: Install dependencies
-        run: |
-          cd /home/khanh/web-file-manager-server
-          git pull
-          pnpm install --frozen-lockfile
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: SSH into Server & install dependencies
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd /home/khanh/web-file-manager-server
+            git pull
+            pnpm install --frozen-lockfile
 
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    environment: server_env
     needs: build
     steps:
-      - name: Deploy server
-        run: pm2 restart 'web file'
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-# name: Node.js CI
-
-# on:
-#   push:
-#     branches: [main]
-
-# jobs:
-#   build:
-#     runs-on: self-hosted
-
-#     strategy:
-#       matrix:
-#         node-version: [20.x]
-
-#     steps:
-#       - name: Pull latest code
-#         run: |
-#           cd /home/khanh/web-file-manager-server  # Thay đổi đường dẫn đến thư mục ứng dụng
-#           git pull origin main
-#       - name: Install dependencies
-#         run: |
-#           cd /home/khanh/web-file-manager-server
-#           npm ci
-#       - name: Restart PM2
-#         run: pm2 restart "web file"
-
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            pm2 restart 'web file'
