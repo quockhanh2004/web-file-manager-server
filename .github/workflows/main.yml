@@ -25,7 +25,7 @@ jobs:
           script: |
             cd /home/khanh/web-file-manager-server
             git pull
-            pnpm install --frozen-lockfile
+            yarn install --production
 
   deploy:
     runs-on: ubuntu-latest
