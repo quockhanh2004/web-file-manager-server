@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd /home/khanh/web-file-manager-server
+            cd /home/${{ secrets.SERVER_USERNAME }}/web-file-manager-server
             git pull
             yarn install --production
 
